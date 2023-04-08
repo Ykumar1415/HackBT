@@ -11,14 +11,14 @@ const cors = require("cors");
 app.use(cors());
 const port =     5000;
 dotenv.config();
- 
+var fileupload = require("express-fileupload");
+app.use(fileupload());
  
 const cookieParser = require("cookie-parser");
  
 app.use("/api/auth/user", require("./routes/user_auth"));
- 
-// app.use('/api/booking', require('./routes/booking'));
-// app.use('/api/bloodbank', require('./routes/bloodbank'));
+app.use("/api/mint", require("./routes/mint"));
+  
 mongoose.set("strictQuery", true);
 const uri = "mongodb+srv://Yk:123@cluster0.zelqca0.mongodb.net/?retryWrites=true&w=majority"
 app.listen(port, () => {

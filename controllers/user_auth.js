@@ -25,7 +25,9 @@ const LoginController = async (req, res) => {
         res.status(200).json({
           username: user.username,
           wid: wid,
+          userid : user._id
         });
+
         console.log(result); // true
       } else {
         res.status(400).json({ msg: "Invalid credentials" });
