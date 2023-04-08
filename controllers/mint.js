@@ -57,7 +57,7 @@ const mintcontroller = async (req, res) => {
             if (!user) return res.status(400).send("User not found");
             user.transactionids.push({
               transactionid: data.quick_mint.transactionID,
-              userId:req.body.userId
+              userId: req.body.userId,
             });
             await user.save();
 
@@ -75,17 +75,66 @@ const mintcontroller = async (req, res) => {
     console.log(err);
   }
 };
-// const getdata = async (req, res)=>{
-//   try{
-// const transactionid = req.body.transactionID; 
-// const trnsxn = await Transactions.findOne({wid : })
+const getTransactionids = async (req, res) => {
+  try {
+    const alltransactions = await Transactions.find({})
+      .populate("userId")
+      .exec();
+    return res.json(alltransactions);
+  } catch (e) {
+    console.log(e);
+  }
+};
 
+const transaction = async (req, res) => {
+  try {
+    const sdk = require("api")("@verbwire/v1.0#4psk2mplfwliyql");
 
-//   }catch(e){
-//     console.log(e)
-//   }
-// }
+    sdk.auth("sk_live_76ec3775-7189-435d-9481-76cdf013e261");
+    sdk
+      .getNftUseropsIpfsuploads()
+      .then(({ data }) => {
+        console.log(data);
+        return res.json(data);
+      })
+      .catch((err) => console.error(err));
+  } catch (e) {
+    console.log(e);
+  }
+};
+const getTxn = async (req, res) => {
+  try {
+    const transaction = await Transactions.findOne({
+      transactionid: req.body.transactionid,
+    }).populate("userId").exec();
+    const sdk = require('api')('@verbwire/v1.0#4psk2mplfwliyql');
+
+    sdk.auth('sk_live_76ec3775-7189-435d-9481-76cdf013e261');
+    sdk.postNftUseropsTransactiondetails({
+      transactionId: req.body.transactionid,
+    }, {accept: 'application/json'})
+      .then(async({ data }) => {console.log(data);
+        
+      //   const link = data.transaction_details.details[0].startTokenURI;
+      // const ldata = await axios.get(link);
+
+        
+      //   // const link1 = link.split('/');
+      //   return res.json(ldata.data)
+        return res.json({data : data.transaction_details.details[0].startTokenURI
+        , contractAddress:data.transaction_details.details[0].contractAddress
+        });
+      
+      }
+        )
+      .catch(err => console.error(err));
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 module.exports = {
   mintcontroller,
+  getTransactionids,
+  transaction,getTxn
 };
