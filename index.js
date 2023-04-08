@@ -20,7 +20,8 @@ app.use("/api/auth/user", require("./routes/user_auth"));
 app.use("/api/mint", require("./routes/mint"));
   app.post("/file",(req, res)=>{
    console.log(req.body);
-  res.send("hello");
+console.log(req.files); 
+  res.json({msg:"hello"});
   })
 mongoose.set("strictQuery", true);
 const uri = "mongodb+srv://Yk:123@cluster0.zelqca0.mongodb.net/?retryWrites=true&w=majority"
