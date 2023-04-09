@@ -153,17 +153,17 @@ async function uploadToCloudinary(locaFilePath) {
   
   var mainFolderName = "main"
   var filePathOnCloudinary = mainFolderName + "/" + locaFilePath
-
+  console.log(locaFilePath);
   return cloudinary.uploader.upload(locaFilePath,{"public_id":filePathOnCloudinary})
   .then((result) => {
-    fs.unlinkSync(locaFilePath)
+//     fs.unlinkSync(locaFilePath)
     
     return {
       message: "Success",
       url:result.url
     };
   }).catch((error) => {
-    fs.unlinkSync(locaFilePath)
+//     fs.unlinkSync(locaFilePath)
     return {message: "Fail",};
   });
 }
