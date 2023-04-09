@@ -192,6 +192,7 @@ const cloudupload = async (req, res) => {
       // result = await cloudinary.uploader.upload(file.tempFilePath, {
       //   folder: "images",
       // });
+      console.log(req.file.path)
       const cloud = await uploadToCloudinary(req.file.path);
       console.log(cloud.url);
       res.json({url : cloud.url});

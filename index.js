@@ -14,6 +14,9 @@ const port =     5000;
 dotenv.config();
 // var fileupload = require("express-fileupload");
 // app.use(fileupload());
+var bodyParser = require('body-parser')
+
+bodyParser.json({limit: '50mb'});
  
 const cookieParser = require("cookie-parser");
  app.use(express.urlencoded({limit:'50mb', extended: true }));
@@ -22,7 +25,9 @@ app.use("/api/mint", require("./routes/mint"));
  
   app.post("/file",(req, res)=>{
    console.log(req.body);
+console.log(req.data); 
 console.log(req.files); 
+
   res.json({msg:"hello"});
   })
 mongoose.set("strictQuery", true);
