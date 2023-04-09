@@ -106,8 +106,7 @@ const transaction = async (req, res) => {
     sdk
       .getNftUseropsIpfsuploads()
       .then(({ data }) => {
-        console.log(data);
-        return res.json(data);
+         return res.json(data.ipfs_upload_details["IPFS file details"]);
       })
       .catch((err) => console.error(err));
   } catch (e) {
