@@ -172,8 +172,8 @@ async function uploadToCloudinary(locaFilePath) {
 
 const cloudupload = async (req, res) => {
   try {
-//     const file =await req.files.image;
-// console.log(file)
+    const file =await req.files.image;
+console.log(file)
     //imgage = > base64
     //   return new Promise((resolve, reject) => {
     //      cloudinary.uploader.upload(image, opts, (error, result) => {
