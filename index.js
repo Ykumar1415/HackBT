@@ -22,7 +22,32 @@ const cookieParser = require("cookie-parser");
 
 
 
+
+
+
 const multer = require('multer')
+
+
+async function uploadToCloudinary(locaFilePath) {
+  
+  var mainFolderName = "main"
+  var filePathOnCloudinary = mainFolderName + "/" + locaFilePath
+  console.log(locaFilePath);
+
+  return cloudinary.uploader.upload(locaFilePath,{"public_id":filePathOnCloudinary})
+  .then((result) => {
+    // fs.unlinkSync(locaFilePath)
+    
+    return {
+      message: "Success",
+      url:result.url
+    };
+  }).catch((error) => {
+    // fs.unlinkSync(locaFilePath)
+    return {message: "Fail",};
+  });
+}
+
 const storage = multer.diskStorage({
   destination: function(req,file,cb){
       cb(null,'./uploads/');
@@ -32,13 +57,16 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage:storage })
-app.post('/upload-image', upload.single('image'), (req, res) => {
-    console.log(req.file)
-    res.json({
-      msg:'Image uploaded successfully',
-      path:req.file.path,
-    path1:req.file.filename,
-    path2:req.file})
+app.post('/upload-image', upload.single('image'), async(req, res) => {
+    // console.log(req.file)
+    // res.json({
+    //   msg:'Image uploaded successfully',
+    //   path:req.file.path,
+    // path1:req.file.filename,
+    // path2:req.file.originalname})
+    const cloud = await uploadToCloudinary(req.file.path);
+      console.log(cloud.url);
+      res.json({url : cloud.url});   
 })
 
 app.use("/api/auth/user", require("./routes/user_auth"));
