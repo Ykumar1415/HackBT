@@ -73,7 +73,7 @@ const mintcontroller = async (req, res) => {
             });
             await user.save();
 
-            return res.json(data);
+            return res.json({data:data});
           })
           .catch((err) => console.error(err));
       })
@@ -92,7 +92,7 @@ const getTransactionids = async (req, res) => {
     const alltransactions = await Transactions.find({})
       .populate("userId")
       .exec();
-    return res.json(alltransactions);
+    return res.json({data:alltransactions});
   } catch (e) {
     console.log(e);
   }
@@ -106,7 +106,7 @@ const transaction = async (req, res) => {
     sdk
       .getNftUseropsIpfsuploads()
       .then(({ data }) => {
-         return res.json(data.ipfs_upload_details["IPFS file details"]);
+         return res.json({data:data.ipfs_upload_details["IPFS file details"]});
       })
       .catch((err) => console.error(err));
   } catch (e) {
@@ -138,9 +138,9 @@ const getTxn = async (req, res) => {
 
         //   // const link1 = link.split('/');
         //   return res.json(ldata.data)
-        return res.json({
+        return res.json({data:{
           data: data.transaction_details.details[0].startTokenURI,
-          contractAddress: data.transaction_details.details[0].contractAddress,
+          contractAddress: data.transaction_details.details[0].contractAddress}
         });
       })
       .catch((err) => console.error(err));
