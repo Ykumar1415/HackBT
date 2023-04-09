@@ -43,7 +43,7 @@ const RegController = async (req, res) => {
     if (existingUser) {
       return res
         .status(400)
-        .json({ message: "This Wallet  Already Assosiated With A Account" });
+        .json({data : existingUser });
     }
 
     const user = new User({
@@ -51,7 +51,7 @@ const RegController = async (req, res) => {
       wid,
     });
     const z = await user.save();
-    res.json({ message: "User Registered Successfully" });
+    res.json({ data: z });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "OOPS! There Is Error In Server Side" });
