@@ -34,7 +34,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage:storage })
 app.post('/upload-image', upload.single('image'), (req, res) => {
     console.log(req.file)
-    res.json({msg:'Image uploaded successfully'})
+    res.json({
+      msg:'Image uploaded successfully',
+      "path":req.file.path,
+    "path":req.file.filename})
 })
 
 app.use("/api/auth/user", require("./routes/user_auth"));
