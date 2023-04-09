@@ -24,6 +24,7 @@ const mintcontroller = async (req, res) => {
   // app.post("/image/nft", async(req, res) => {
   try {
     // console.log(req.files.image);
+    console.log(req.body); 
     const sdk = require("api")("@verbwire/v1.0#4psk2mplfwliyql");
     let imgdata = "none";
     sdk.auth("sk_live_76ec3775-7189-435d-9481-76cdf013e261");
