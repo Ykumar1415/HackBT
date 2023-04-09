@@ -11,7 +11,6 @@ const cloudinary = require("./cloudinary");
 //   invalidate: true,
 //   resource_type: "auto",
 // };
-
 let encodeUrl = parseUrl.urlencoded({ extended: false });
 const axios = require("axios");
 const fs = require("fs");
@@ -19,6 +18,8 @@ const FormData = require("form-data");
 var multipart = require("connect-multiparty");
 const Transactions = require("../models/Transactions");
 var multipartmiddleware = multipart();
+// **************************
+
 const mintcontroller = async (req, res) => {
   // app.post("/image/nft", async(req, res) => {
   try {
@@ -30,9 +31,9 @@ const mintcontroller = async (req, res) => {
     //   .postNftStoreMetadatafromimage(
     //     {
     //       filePath: "./img.jpg",
-    //       name: req.body.name,
-    //       description: req.body.description,
-    //       data: req.body.data || "",
+    //       name: req.body.nft.name,
+    //       description: req.body.nft.description,
+    //       data: req.body.nft.data || "",
     //     },
     //     { accept: "application/json" }
     //   )
@@ -40,10 +41,10 @@ const mintcontroller = async (req, res) => {
     await sdk
       .postNftStoreMetadatafromimageurl(
         {
-          fileUrl: req.body.fileUrl,
+          fileUrl: req.body.nft.fileUrl,
 
-          name: req.body.name,
-          description: req.body.description,
+          name: req.body.nft.name,
+          description: req.body.nft.description,
         }
         // ,{ accept: "application/json" }
       )
@@ -55,19 +56,19 @@ const mintcontroller = async (req, res) => {
           .postNftMintQuickmintfrommetadataurl(
             {
               allowPlatformToOperateToken: "true",
-              chain: req.body.chain,
+              chain: req.body.nft.chain,
               metadataUrl: data.ipfs_storage.metadata_url,
-              recipientAddress: req.body.recipientAddress,
+              recipientAddress: req.body.nft.recipientAddress,
             },
             { accept: "application/json" }
           )
           .then(async ({ data }) => {
             console.log(data);
-            const user = await User.findOne({ wid: req.body.wid });
+            const user = await User.findOne({ wid: req.body.nft.wid });
             if (!user) return res.status(400).send("User not found");
             user.transactionids.push({
               transactionid: data.quick_mint.transactionID,
-              userId: req.body.userId,
+              userId: req.body.nft.userId,
             });
             await user.save();
 
