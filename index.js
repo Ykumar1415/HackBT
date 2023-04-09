@@ -10,6 +10,7 @@ const bcrypt = require("bcryptjs");
 const cors = require("cors");
 // app.use(responsetime)
 app.use(cors());
+app.use('uploads', express.static('uploads'));
 const port =     5000;
 dotenv.config();
 // var fileupload = require("express-fileupload");
