@@ -147,10 +147,33 @@ const getTxn = async (req, res) => {
     console.log(e);
   }
 };
+
+
+async function uploadToCloudinary(locaFilePath) {
+  
+  var mainFolderName = "main"
+  var filePathOnCloudinary = mainFolderName + "/" + locaFilePath
+
+  return cloudinary.uploader.upload(locaFilePath,{"public_id":filePathOnCloudinary})
+  .then((result) => {
+    fs.unlinkSync(locaFilePath)
+    
+    return {
+      message: "Success",
+      url:result.url
+    };
+  }).catch((error) => {
+    fs.unlinkSync(locaFilePath)
+    return {message: "Fail",};
+  });
+}
+
+
+
 const cloudupload = async (req, res) => {
   try {
-    const file =await req.files.image;
-console.log(file)
+//     const file =await req.files.image;
+// console.log(file)
     //imgage = > base64
     //   return new Promise((resolve, reject) => {
     //      cloudinary.uploader.upload(image, opts, (error, result) => {
@@ -169,14 +192,18 @@ console.log(file)
       // result = await cloudinary.uploader.upload(file.tempFilePath, {
       //   folder: "images",
       // });
-     let result = await cloudinary.uploader.upload(file.tempFilePath, { resource_type: "auto" }, (error, result) => {
-        if (error) {
-          console.error(error);
-          return res.status(500).send(error);
-        }
-        console.log(result);
-        res.send(result);
-    })
+      const cloud = await uploadToCloudinary(req.file.path);
+      console.log(cloud.url);
+      res.json({url : cloud.url});
+
+    //  let result = await cloudinary.uploader.upload(file.tempFilePath, { resource_type: "auto" }, (error, result) => {
+    //     if (error) {
+    //       console.error(error);
+    //       return res.status(500).send(error);
+    //     }
+    //     console.log(result);
+    //     res.send(result);
+    // })
    } catch (err) {
       console.log(err);
     }

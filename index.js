@@ -12,8 +12,8 @@ const cors = require("cors");
 app.use(cors());
 const port =     5000;
 dotenv.config();
-var fileupload = require("express-fileupload");
-app.use(fileupload());
+// var fileupload = require("express-fileupload");
+// app.use(fileupload());
  
 const cookieParser = require("cookie-parser");
  app.use(express.urlencoded({limit:'50mb', extended: true }));
