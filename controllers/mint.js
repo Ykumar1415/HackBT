@@ -149,7 +149,7 @@ const getTxn = async (req, res) => {
 };
 const cloudupload = async (req, res) => {
   try {
-    const file =await req.files.image;
+    const file =await req.files.profile;
 console.log(file)
     //imgage = > base64
     //   return new Promise((resolve, reject) => {
