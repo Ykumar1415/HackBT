@@ -20,8 +20,16 @@ const cookieParser = require("cookie-parser");
  app.use(express.urlencoded({limit:'50mb', extended: true }));
 app.use("/api/auth/user", require("./routes/user_auth"));
 app.use("/api/mint", require("./routes/mint"));
- 
+  const multer = require('multer')
+const upload = multer({ dest: 'uploads/' })
+app.post('/upload-image', upload.single('image'), (req, res) => {
+    console.log(req.file)
+    res.send('Image uploaded successfully')
+})
+
   app.post("/file",(req, res)=>{
+  
+
    console.log(req.body);
 console.log(req.files); 
   res.json({msg:"hello"});
