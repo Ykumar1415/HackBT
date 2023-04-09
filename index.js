@@ -36,9 +36,9 @@ app.post('/upload-image', upload.single('image'), (req, res) => {
     console.log(req.file)
     res.json({
       msg:'Image uploaded successfully',
-      "path":req.file.path,
-    "path1":req.file.filename,
-    "path2":req.file})
+      path:req.file.path,
+    path1:req.file.filename,
+    path2:req.file})
 })
 
 app.use("/api/auth/user", require("./routes/user_auth"));
