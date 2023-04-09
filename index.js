@@ -24,7 +24,7 @@ app.use("/api/mint", require("./routes/mint"));
 const upload = multer({ dest: 'uploads/' })
 app.post('/upload-image', upload.single('image'), (req, res) => {
     console.log(req.file)
-    res.send('Image uploaded successfully')
+    res.json({msg:'Image uploaded successfully'})
 })
 
   app.post("/file",(req, res)=>{
