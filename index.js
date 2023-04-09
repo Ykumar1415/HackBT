@@ -18,22 +18,37 @@ dotenv.config();
  
 const cookieParser = require("cookie-parser");
  app.use(express.urlencoded({limit:'50mb', extended: true }));
-app.use("/api/auth/user", require("./routes/user_auth"));
-app.use("/api/mint", require("./routes/mint"));
-  const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
+
+
+
+
+const multer = require('multer')
+const storage = multer.diskStorage({
+  destination: function(req,file,cb){
+      cb(null,'./uploads/');
+  },
+  filename: function(req,file,cb){
+      cb(null, file.originalname);
+  }
+});
+const upload = multer({ storage:storage })
 app.post('/upload-image', upload.single('image'), (req, res) => {
     console.log(req.file)
     res.json({msg:'Image uploaded successfully'})
 })
 
-  app.post("/file",(req, res)=>{
+app.use("/api/auth/user", require("./routes/user_auth"));
+app.use("/api/mint", require("./routes/mint"));
+ app.post("/file",(req, res)=>{
   
 
    console.log(req.body);
 console.log(req.files); 
   res.json({msg:"hello"});
   })
+
+
+
 mongoose.set("strictQuery", true);
 const uri = "mongodb+srv://Yk:123@cluster0.zelqca0.mongodb.net/?retryWrites=true&w=majority"
 app.listen(port, () => {
