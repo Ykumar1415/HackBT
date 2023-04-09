@@ -6,9 +6,9 @@ const LoginController = async (req, res) => {
   try {
     console.log(req.body);
     const wid = req.body.wid;
-    const password = req.body.password;
+
     // Simple validation
-    if (!wid || !password) {
+    if (!wid) {
       return res.status(400).json({ msg: "Please enter all fields" });
     }
 
@@ -19,19 +19,14 @@ const LoginController = async (req, res) => {
         .json({ msg: "User Does not exist , Invalid Credentials" });
     else if (user) {
       console.log(user);
-      const ispass = await bcrypt.compare(password, user.password);
 
-      if (ispass) {
-        res.status(200).json({
-          username: user.username,
-          wid: wid,
-          userid : user._id
-        });
+      res.status(200).json({
+        username: user.username,
+        wid: wid,
+        userid: user._id,
+      });
 
-        console.log(result); // true
-      } else {
-        res.status(400).json({ msg: "Invalid credentials" });
-      }
+      console.log(result); // true
     } else {
       res.status(400).json({ msg: "Invalid credentials" });
     }
@@ -43,18 +38,17 @@ const LoginController = async (req, res) => {
 
 const RegController = async (req, res) => {
   try {
-    const { username, wid, password } = req.body;
+    const { username, wid } = req.body;
     const existingUser = await User.findOne({ wid: wid });
     if (existingUser) {
       return res
         .status(400)
         .json({ message: "This Wallet  Already Assosiated With A Account" });
     }
-    const hashPassword = await bcrypt.hash(password, 10);
+
     const user = new User({
       username,
       wid,
-      password: hashPassword,
     });
     const z = await user.save();
     res.json({ message: "User Registered Successfully" });
@@ -65,4 +59,5 @@ const RegController = async (req, res) => {
 };
 module.exports = {
   LoginController,
-  RegController}
+  RegController,
+};
