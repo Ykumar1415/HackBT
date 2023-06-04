@@ -6,14 +6,10 @@ const Schema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    wild_card: {
+    wid: {
       type: String,
       required: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
+    } 
   
   },
   { timestamps: true }

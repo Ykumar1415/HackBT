@@ -11,7 +11,6 @@ const cloudinary = require("./cloudinary");
 //   invalidate: true,
 //   resource_type: "auto",
 // };
-
 let encodeUrl = parseUrl.urlencoded({ extended: false });
 const axios = require("axios");
 const fs = require("fs");
@@ -19,10 +18,13 @@ const FormData = require("form-data");
 var multipart = require("connect-multiparty");
 const Transactions = require("../models/Transactions");
 var multipartmiddleware = multipart();
+// **************************
+
 const mintcontroller = async (req, res) => {
   // app.post("/image/nft", async(req, res) => {
   try {
     // console.log(req.files.image);
+    console.log(req.body); 
     const sdk = require("api")("@verbwire/v1.0#4psk2mplfwliyql");
     let imgdata = "none";
     sdk.auth("sk_live_76ec3775-7189-435d-9481-76cdf013e261");
@@ -30,9 +32,9 @@ const mintcontroller = async (req, res) => {
     //   .postNftStoreMetadatafromimage(
     //     {
     //       filePath: "./img.jpg",
-    //       name: req.body.name,
-    //       description: req.body.description,
-    //       data: req.body.data || "",
+    //       name: req.body.nft.name,
+    //       description: req.body.nft.description,
+    //       data: req.body.nft.data || "",
     //     },
     //     { accept: "application/json" }
     //   )
@@ -40,10 +42,10 @@ const mintcontroller = async (req, res) => {
     await sdk
       .postNftStoreMetadatafromimageurl(
         {
-          fileUrl: req.body.fileUrl,
+          fileUrl: req.body.nft.fileUrl,
 
-          name: req.body.name,
-          description: req.body.description,
+          name: req.body.nft.name,
+          description: req.body.nft.description,
         }
         // ,{ accept: "application/json" }
       )
@@ -55,23 +57,23 @@ const mintcontroller = async (req, res) => {
           .postNftMintQuickmintfrommetadataurl(
             {
               allowPlatformToOperateToken: "true",
-              chain: req.body.chain,
+              chain: req.body.nft.chain,
               metadataUrl: data.ipfs_storage.metadata_url,
-              recipientAddress: req.body.recipientAddress,
+              recipientAddress: req.body.nft.recipientAddress,
             },
             { accept: "application/json" }
           )
           .then(async ({ data }) => {
             console.log(data);
-            const user = await User.findOne({ wid: req.body.wid });
+            const user = await User.findOne({ wid: req.body.nft.wid });
             if (!user) return res.status(400).send("User not found");
             user.transactionids.push({
               transactionid: data.quick_mint.transactionID,
-              userId: req.body.userId,
+              userId: req.body.nft.userId,
             });
             await user.save();
 
-            return res.json(data);
+            return res.json({data:data});
           })
           .catch((err) => console.error(err));
       })
@@ -90,7 +92,7 @@ const getTransactionids = async (req, res) => {
     const alltransactions = await Transactions.find({})
       .populate("userId")
       .exec();
-    return res.json(alltransactions);
+    return res.json({data:alltransactions});
   } catch (e) {
     console.log(e);
   }
@@ -104,8 +106,7 @@ const transaction = async (req, res) => {
     sdk
       .getNftUseropsIpfsuploads()
       .then(({ data }) => {
-        console.log(data);
-        return res.json(data);
+         return res.json({data:data.ipfs_upload_details["IPFS file details"]});
       })
       .catch((err) => console.error(err));
   } catch (e) {
@@ -137,9 +138,9 @@ const getTxn = async (req, res) => {
 
         //   // const link1 = link.split('/');
         //   return res.json(ldata.data)
-        return res.json({
+        return res.json({data:{
           data: data.transaction_details.details[0].startTokenURI,
-          contractAddress: data.transaction_details.details[0].contractAddress,
+          contractAddress: data.transaction_details.details[0].contractAddress}
         });
       })
       .catch((err) => console.error(err));
@@ -153,17 +154,17 @@ async function uploadToCloudinary(locaFilePath) {
   
   var mainFolderName = "main"
   var filePathOnCloudinary = mainFolderName + "/" + locaFilePath
-
+  console.log(locaFilePath);
   return cloudinary.uploader.upload(locaFilePath,{"public_id":filePathOnCloudinary})
   .then((result) => {
-    fs.unlinkSync(locaFilePath)
+//     fs.unlinkSync(locaFilePath)
     
     return {
       message: "Success",
       url:result.url
     };
   }).catch((error) => {
-    fs.unlinkSync(locaFilePath)
+//     fs.unlinkSync(locaFilePath)
     return {message: "Fail",};
   });
 }
@@ -193,10 +194,14 @@ const cloudupload = async (req, res) => {
       //   folder: "images",
       // });
 <<<<<<< HEAD
+<<<<<<< HEAD
       console.log(req.file.path)
 =======
       console.log(req.file); 
 >>>>>>> 2f4409fcdaadd1b11e0a5d3423838a48d3d621f2
+=======
+      console.log(req.file); 
+>>>>>>> main
       const cloud = await uploadToCloudinary(req.file.path);
       console.log(cloud.url);
       res.json({url : cloud.url});
